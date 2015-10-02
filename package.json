@@ -1,0 +1,24 @@
+{
+  "name": "secam-pi",
+  "version": "1.0.0",
+  "description": "Go away",
+  "main": "index.js",
+  "scripts": {
+    "start": "forever index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/imakewebthings/secam-pi.git"
+  },
+  "author": "Caleb Troughton <caleb@imakewebthings.com> (http://imakewebthings.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/imakewebthings/secam-pi/issues"
+  },
+  "homepage": "https://github.com/imakewebthings/secam-pi#readme",
+  "dependencies": {
+    "forever": "^0.15.1",
+    "nconf": "^0.8.0"
+  }
+}
