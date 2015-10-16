@@ -32,10 +32,6 @@ function checkStatus () {
 }
 
 function streamCommand() {
-  return 'say "FART"'
-}
-/*
-function streamCommand() {
   return [
     'raspivid',
     '-o -',
@@ -64,4 +60,3 @@ function streamCommand() {
     'rtmp://a.rtmp.youtube.com/live2/' + config.get('YOUTUBE_KEY')
   ].join(' ')
 }
-*/
