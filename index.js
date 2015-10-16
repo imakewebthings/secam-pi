@@ -34,6 +34,7 @@ function checkStatus () {
 function streamCommand() {
   return [
     'raspivid',
+    '-n',
     '-o -',
     '-t 0',
     '-vf',
