@@ -19,6 +19,7 @@
   "homepage": "https://github.com/imakewebthings/secam-pi#readme",
   "dependencies": {
     "forever": "^0.15.1",
-    "nconf": "^0.8.0"
+    "nconf": "^0.8.0",
+    "request": "^2.65.0"
   }
 }

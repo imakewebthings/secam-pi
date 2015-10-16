@@ -1,36 +1,37 @@
-var http = require('http')
+var request = require('request')
 var exec = require('child_process').exec
 var config = require('nconf').env().file({
   file: 'config.json'
 })
-var statusUrl = 'http://' + config.get('SECAM_HOST') + '/status'
-var lastStatus = 204
+var lastCommand = 'OFF'
 var camProc
+
+var commands = {
+  OFF: function () {
+    camProc && camProc.kill()
+    camProc = null
+  },
+  ON: function () {
+    camProc = camProc || exec(streamCommand(), function () {})
+  }
+}
 
 checkStatus()
 
 function checkStatus () {
-  http.request(statusUrl, function (res) {
-    if (res.statusCode !== lastStatus) {
-      flipSwitch()
-      lastStatus = res.statusCode
-    } else {
-      setTimeout(checkStatus, 2000)
+  request(config.get('SECAM_STATUS_URL'), function (err, response, body) {
+    if (response.statusCode === 200) {
+      var command = JSON.parse(body)['COMMAND']
+      if (command !== lastCommand && commands[command]) {
+        commands[command]()
+        lastCommand = command
+      }
     }
+    setTimeout(checkStatus, 5000)
   })
 }
 
-function flipSwitch () {
-  if (lastStatus === 204) {
-    camProc = exec(command(), function () {
-      setTimeout(checkStatus, 2000)
-    })
-  } else {
-    camProc.kill()
-  }
-}
-
-function command() {
+function streamCommand() {
   return [
     'raspivid',
     '-o -',
