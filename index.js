@@ -1,5 +1,5 @@
 var request = require('request')
-var spawn = require('child_process').spawn
+var exec = require('child_process').exec
 var config = require('nconf').env().file({
   file: 'config.json'
 })
@@ -8,16 +8,20 @@ var camProc
 
 var commands = {
   OFF: function () {
+    console.log(camProc)
     if (camProc) {
-      console.log('Killing process')
       camProc.kill('SIGKILL')
-      camProc = null
     }
+    camProc = null
   },
   ON: function () {
     if (!camProc) {
       console.log('Streaming started')
-      camProc = spawn(streamCommand(), streamArguments())
+      camProc = exec(streamCommand(), function (err, stdout, stderr) {
+        console.log('Streaming stopped')
+        console.log(stdout)
+        console.log(stderr)
+      })
     }
   }
 }
@@ -38,54 +42,33 @@ function checkStatus () {
   })
 }
 
-function streamCommand () {
-  return 'raspivid'
-}
-
-function streamArguments () {
+function streamCommand() {
   return [
+    'raspivid',
     '-n',
-    '-o',
-    '-',
-    '-t',
-    '0',
+    '-o -',
+    '-t 0',
     '-vf',
     '-hf',
-    '-fps',
-    '30',
-    '-b',
-    '6000000',
+    '-fps 30',
+    '-b 6000000',
     '|',
     'ffmpeg',
     '-re',
-    '-ar',
-    '44100',
-    '-ac',
-    '2',
-    '-acodec',
-    'pcm_s16le',
-    '-f',
-    's16le',
-    '-ac',
-    '2',
-    '-i',
-    '/dev/zero',
-    '-f',
-    'h264',
-    '-i',
-    '-',
-    '-vcodec',
-    'copy',
-    '-acodec'
-    'aac',
-    '-ab',
-    '128k',
-    '-g',
-    '50',
-    '-strict'
-    'experimental',
-    '-f',
-    'flv',
+    '-ar 44100',
+    '-ac 2',
+    '-acodec pcm_s16le',
+    '-f s16le',
+    '-ac 2',
+    '-i /dev/zero',
+    '-f h264',
+    '-i -',
+    '-vcodec copy',
+    '-acodec aac',
+    '-ab 128k',
+    '-g 50',
+    '-strict experimental',
+    '-f flv',
     'rtmp://a.rtmp.youtube.com/live2/' + config.get('YOUTUBE_KEY')
-  ]
+  ].join(' ')
 }
