@@ -12,7 +12,14 @@ var commands = {
     camProc = null
   },
   ON: function () {
-    camProc = camProc || exec(streamCommand(), function () {})
+    if (!camProc) {
+      console.log('Streaming started')
+      camProc = exec(streamCommand(), function (err, stdout, stderr) {
+        console.log('Streaming stopped')
+        console.log(stdout)
+        console.log(stderr)
+      })
+    }
   }
 }
 
@@ -49,7 +56,7 @@ function streamCommand() {
     '-acodec pcm_s16le',
     '-f s16le',
     '-ac 2',
-    '/dev/zero',
+    '-i /dev/zero',
     '-f h264',
     '-i -',
     '-vcodec copy',
