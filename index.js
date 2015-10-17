@@ -9,9 +9,9 @@ var camProc
 
 var commands = {
   OFF: function () {
-    console.log(!!camProc)
     if (camProc) {
       exec('pkill raspivid')
+      exec('pkill ffmpeg')
     }
     camProc = null
   },
