@@ -76,13 +76,13 @@ function streamArguments () {
     '-',
     '-vcodec',
     'copy',
-    '-acodec'
+    '-acodec',
     'aac',
     '-ab',
     '128k',
     '-g',
     '50',
-    '-strict'
+    '-strict',
     'experimental',
     '-f',
     'flv',
