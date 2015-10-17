@@ -4,6 +4,7 @@ var config = require('nconf').env().file({
   file: 'config.json'
 })
 var lastCommand = 'OFF'
+var cacheBuster = 0
 var camProc
 
 var commands = {
@@ -29,7 +30,7 @@ var commands = {
 checkStatus()
 
 function checkStatus () {
-  request(config.get('SECAM_STATUS_URL'), function (err, response, body) {
+  request(statusUrl(), function (err, response, body) {
     if (response.statusCode === 200) {
       var command = JSON.parse(body)['COMMAND']
       if (command !== lastCommand && commands[command]) {
@@ -40,6 +41,11 @@ function checkStatus () {
     }
     setTimeout(checkStatus, 5000)
   })
+}
+
+function statusUrl () {
+  cacheBuster += 1
+  return config.get('SECAM_STATUS_URL') + '?' + cacheBuster
 }
 
 function streamCommand() {
