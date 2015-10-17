@@ -8,7 +8,7 @@ var camProc
 
 var commands = {
   OFF: function () {
-    camProc && camProc.kill('SIGINT')
+    camProc && camProc.kill('SIGKILL')
     camProc = null
   },
   ON: function () {
@@ -30,6 +30,7 @@ function checkStatus () {
     if (response.statusCode === 200) {
       var command = JSON.parse(body)['COMMAND']
       if (command !== lastCommand && commands[command]) {
+        console.log('Received command ' + command)
         commands[command]()
         lastCommand = command
       }
