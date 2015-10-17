@@ -8,7 +8,7 @@ var camProc
 
 var commands = {
   OFF: function () {
-    camProc && camProc.kill()
+    camProc && camProc.kill('SIGINT')
     camProc = null
   },
   ON: function () {
